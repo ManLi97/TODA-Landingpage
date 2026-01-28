@@ -71,6 +71,87 @@
             </footer>
         </main>
     </div>
+
+    <!-- Signup modal (Iteration A: markup + CSS only; no JS wiring yet) -->
+    <div class="toda-modal" id="signup-modal" hidden>
+        <div class="toda-modal__overlay" aria-hidden="true"></div>
+        <div class="toda-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="signup-modal-title">
+            <button type="button" class="toda-modal__close" aria-label="Modal schließen">
+                <span aria-hidden="true">×</span>
+            </button>
+
+            <h2 class="toda-modal__title" id="signup-modal-title">Keep me posted</h2>
+
+            <!-- General error + success placeholders (not wired yet) -->
+            <div class="toda-modal__alert toda-modal__alert--error" id="signup-modal-error" hidden>
+                <strong>Oops.</strong> Bitte überprüfe deine Eingaben und versuche es erneut.
+            </div>
+            <div class="toda-modal__alert toda-modal__alert--success" id="signup-modal-success" hidden>
+                Danke! Wir melden uns, sobald es losgeht.
+            </div>
+
+            <form class="toda-modal__form" id="signup-modal-form" novalidate>
+                <div class="toda-modal__field">
+                    <label class="toda-modal__label" for="lead-name">Name / Artist Name <span class="toda-modal__req"
+                            aria-hidden="true">*</span></label>
+                    <input class="toda-modal__input" id="lead-name" name="name" type="text" autocomplete="name"
+                        placeholder="z.B. Laura / Blackline Studio" required />
+                    <div class="toda-modal__field-error" id="lead-name-error" hidden>Bitte gib deinen Namen an.</div>
+                </div>
+
+                <div class="toda-modal__field">
+                    <label class="toda-modal__label" for="lead-email">Email <span class="toda-modal__req"
+                            aria-hidden="true">*</span></label>
+                    <input class="toda-modal__input" id="lead-email" name="email" type="email" inputmode="email"
+                        autocomplete="email" placeholder="name@studio.de" required />
+                    <div class="toda-modal__field-error" id="lead-email-error" hidden>Bitte gib eine gültige Email an.
+                    </div>
+                </div>
+
+                <div class="toda-modal__field">
+                    <div class="toda-modal__label" id="lead-segment-label">Du bist...</div>
+                    <div class="toda-modal__chips" role="group" aria-labelledby="lead-segment-label"
+                        data-chip-group="segment">
+                        <button type="button" class="toda-modal__chip" data-chip-value="Solo Artist"
+                            aria-pressed="false">Solo Artist</button>
+                        <button type="button" class="toda-modal__chip" data-chip-value="Studio" aria-pressed="false">
+                            Studio</button>
+                    </div>
+                    <input id="lead-segment" name="segment" type="hidden" value="" />
+                    <div class="toda-modal__field-error" id="lead-segment-error" hidden>Bitte wähle eine gültige Option.</div>
+                </div>
+
+                <div class="toda-modal__field">
+                    <div class="toda-modal__label" id="lead-appointments-label">Termine pro Woche</div>
+                    <div class="toda-modal__chips" role="group" aria-labelledby="lead-appointments-label"
+                        data-chip-group="appointments_per_week">
+                        <button type="button" class="toda-modal__chip" data-chip-value="2–5" aria-pressed="false">2–5</button>
+                        <button type="button" class="toda-modal__chip" data-chip-value="6–10" aria-pressed="false">6–10</button>
+                        <button type="button" class="toda-modal__chip" data-chip-value="10+" aria-pressed="false">10+</button>
+                    </div>
+                    <input id="lead-appointments" name="appointments_per_week" type="hidden" value="" />
+                    <div class="toda-modal__field-error" id="lead-appointments-error" hidden>Bitte wähle eine gültige Option.</div>
+                </div>
+
+                <div class="toda-modal__field toda-modal__field--consent">
+                    <label class="toda-modal__checkbox">
+                        <input class="toda-modal__checkbox-input" id="lead-consent" name="marketing_consent"
+                            type="checkbox" required />
+                        <span class="toda-modal__checkbox-label">
+                            Ich will Updates erhalten und akzeptiere die
+                            <a class="toda-modal__link" href="datenschutz.html">Datenschutzerklärung</a>.
+                            <span class="toda-modal__req" aria-hidden="true">*</span>
+                        </span>
+                    </label>
+                    <div class="toda-modal__field-error" id="lead-consent-error" hidden>Bitte bestätige dein
+                        Einverständnis.</div>
+                </div>
+
+                <button type="submit" class="cta-button toda-modal__submit">Absenden</button>
+            </form>
+        </div>
+    </div>
+
     <script type="module" src="/main.js"></script>
 </body>
 

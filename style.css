@@ -265,3 +265,223 @@ body {
     color: var(--color-text-muted);
     margin-bottom: 1rem;
 }
+
+/* Signup Modal (Iteration A: CSS only, strictly scoped) */
+.toda-modal[hidden] {
+    display: none;
+}
+
+.toda-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.toda-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(6, 4, 4, 0.72);
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+}
+
+.toda-modal__dialog {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+    background: rgba(23, 20, 16, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 1.25rem;
+    box-shadow: 0 18px 70px rgba(0, 0, 0, 0.55);
+}
+
+.toda-modal__close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(6, 4, 4, 0.35);
+    color: var(--color-text);
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toda-modal__close span {
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.toda-modal__title {
+    font-family: var(--font-serif);
+    font-size: 1.75rem;
+    color: var(--color-text);
+    margin: 0 2.75rem 1rem 0;
+}
+
+.toda-modal__alert {
+    border-radius: 6px;
+    padding: 0.75rem 0.9rem;
+    margin-bottom: 0.9rem;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+}
+
+.toda-modal__alert--error {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    color: var(--color-text);
+}
+
+.toda-modal__alert--success {
+    background: rgba(228, 195, 67, 0.10);
+    border: 1px solid rgba(228, 195, 67, 0.25);
+    color: var(--color-text);
+}
+
+.toda-modal__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.toda-modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.toda-modal__label {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    color: var(--color-text);
+}
+
+.toda-modal__req {
+    color: var(--color-gold-bright);
+    font-weight: 600;
+}
+
+.toda-modal__input,
+.toda-modal__select {
+    width: 100%;
+    padding: 0.85rem 0.9rem;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(6, 4, 4, 0.35);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    outline: none;
+}
+
+.toda-modal__input::placeholder {
+    color: rgba(240, 240, 240, 0.55);
+}
+
+.toda-modal__select option {
+    background: var(--color-black);
+    color: var(--color-text);
+}
+
+.toda-modal__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.toda-modal__chip {
+    min-height: 44px;
+    padding: 0.65rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(6, 4, 4, 0.35);
+    color: var(--color-text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.toda-modal__chip:hover {
+    border-color: rgba(228, 195, 67, 0.25);
+}
+
+.toda-modal__chip:active {
+    transform: translateY(1px);
+}
+
+.toda-modal__chip.is-active,
+.toda-modal__chip[aria-pressed="true"] {
+    background: linear-gradient(135deg, var(--color-gold-bright) 0%, var(--color-gold-dark) 100%);
+    border-color: rgba(228, 195, 67, 0.35);
+    color: var(--color-black);
+    font-weight: 600;
+}
+
+.toda-modal__field-error {
+    color: var(--color-gold-bright);
+    font-size: 0.9rem;
+}
+
+.toda-modal__field--consent {
+    gap: 0.6rem;
+}
+
+.toda-modal__checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toda-modal__checkbox-input {
+    width: 20px;
+    height: 20px;
+    margin-top: 0.15rem;
+    accent-color: var(--color-gold-bright);
+}
+
+.toda-modal__checkbox-label {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+.toda-modal__link {
+    color: var(--color-gold-bright);
+    text-decoration: none;
+}
+
+.toda-modal__link:hover {
+    text-decoration: underline;
+}
+
+.toda-modal__submit {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .toda-modal {
+        padding: 2rem;
+    }
+
+    .toda-modal__dialog {
+        padding: 1.5rem 1.75rem;
+    }
+
+    .toda-modal__title {
+        font-size: 2rem;
+    }
+}
