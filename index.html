@@ -20,7 +20,7 @@
             <section class="hero">
                 <div class="hero-content">
                     <h1 class="headline">Mehr Kunst.<br><span class="highlight">Weniger Chaos.</span></h1>
-                    <p class="subtext">Die Lösung, mit der Du dich wieder auf deine Kunst konzentrieren kannst.</p>
+                    <p class="subtext">Unsere Lösung:<br>Von Tattoo Artists. Für Tattoo Artists.<br>Erstkontakt endlich leicht gemacht!</p>
 
                     <form class="cta-form" id="signup-form">
                         <button type="submit" class="cta-button">Keep me posted</button>
@@ -28,28 +28,33 @@
                 </div>
             </section>
 
+            <section class="pre-features">
+                <p class="pre-features__text">Sichere Dir jetzt Deinen kostenlosen Probemonat!<br>Werde Teil unserer
+                    Community!</p>
+            </section>
+
             <section class="features" id="features">
                 <div class="feature-card">
-                    <h3>Booking & Calendar</h3>
-                    <p>Verwalte deine Termine so einfach wie nie zuvor. Keine Doppelbuchungen, voller Fokus.</p>
+                    <h3>Was bedeutet Erstkontakt?</h3>
+                    <p>Der Erstkontakt ist meist der schwierigste Part. Eine Anfrage mit “was kostet Tattoo” haben wir doch alle schon einmal erhalten. Mithilfe dieses Tools sparst du dir Zeit und Nerven.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Digital Forms</h3>
-                    <p>Einverständniserklärungen digital und sicher. Kein Papierkram mehr.</p>
+                    <h3>Wie erhalte ich alle Informationen, die ich brauche, um eine Preisübersicht zu gestalten?</h3>
+                    <p>Unser System ist so konzipiert, dass dir der Kunde anhand seiner Anfrage, alle Informationen liefert, die du benötigst, um einen ungefähren Preis zu geben. Sollte eine weitere Beratung von Nöten sein, kannst du dem Kunden hier auch einen Termin für eine Beratung anbieten.</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Payments</h3>
-                    <p>Anzahlungen und Abrechnungen integriert. Schnell, sicher und transparent.</p>
+                    <h3>Wo buchen meine Kunden?</h3>
+                    <p>Jetzt kommt unsere Cherry on Top!<br><br>Mit diesem Tool bekommst du eine kostenlose website einfach so dazu! Texte, Bilder und Content. Du kannst dir bei Toda deine eigene Website ganz einfach und schnell gestalten. Innerhalb von Minuten kannst du alles einstellen, wie du möchtest. OHNE Ki, OHNE Websitebaukasten!<br><br>Einfach, schnell und Nützlich!</p>
                 </div>
                 <div class="feature-card">
-                    <h3>Client History</h3>
-                    <p>Alle Infos zu deinen Kunden an einem Ort. Von der Skizze bis zum verheilten Tattoo.</p>
+                    <h3>Was ist nach der Preisanfrage!</h3>
+                    <p>Dein eigenes Kommunikationscenter wartet schon auf dich. Hier hast du Einsicht in alle Anfragen, Chats, Kundenkarteien uvm.<br><br>Solltest du etwas vergessen haben, kannst du es hier nochmals nachlesen. Solltest du etwas ergänzen wollen, kannst du es hier nachtragen.<br><br>Wichtige Informationen, wie z. B. Allergien kannst du hier nachtragen und immer im überblick behalten.</p>
                 </div>
             </section>
 
             <section class="bottom-cta">
                 <div class="cta-content">
-                    <h2 class="sub-headline">Sei von Anfang an dabei.<br>Wir kontaktieren dich sobald es losgeht!</h2>
+                    <h2 class="sub-headline">Endlich wieder Zeit für die wichtigen Dinge haben!<br> Unsere Community freut sich auf dich!</h2>
                     <form class="cta-form" id="signup-form-bottom">
                         <button type="submit" class="cta-button">Sei als erstes dabei</button>
                     </form>
@@ -83,7 +88,8 @@
             <h2 class="toda-modal__title" id="signup-modal-title">Keep me posted</h2>
 
             <!-- General error + success placeholders (not wired yet) -->
-            <div class="toda-modal__alert toda-modal__alert--error" id="signup-modal-error" hidden>
+            <div class="toda-modal__alert toda-modal__alert--error" id="signup-modal-error" role="alert"
+                aria-live="polite" hidden>
                 <strong>Oops.</strong> Bitte überprüfe deine Eingaben und versuche es erneut.
             </div>
             <div class="toda-modal__alert toda-modal__alert--success" id="signup-modal-success" hidden>
@@ -149,6 +155,18 @@
 
                 <button type="submit" class="cta-button toda-modal__submit">Absenden</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Success toast/overlay (Iteration C) -->
+    <div class="toda-toast" id="signup-success-toast" hidden>
+        <div class="toda-toast__overlay" aria-hidden="true"></div>
+        <div class="toda-toast__dialog" role="dialog" aria-modal="true" aria-labelledby="signup-success-title">
+            <button type="button" class="toda-toast__close" aria-label="Hinweis schließen">
+                <span aria-hidden="true">×</span>
+            </button>
+            <h2 class="toda-toast__title" id="signup-success-title">Super! Das hat geklappt!</h2>
+            <p class="toda-toast__text">Danke! Du bist auf der Liste. Wir melden uns, sobald es Neuigkeiten gibt.</p>
         </div>
     </div>
 

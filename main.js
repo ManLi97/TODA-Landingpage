@@ -1,14 +1,107 @@
 // Modal wiring (Iteration B: behavior + accessibility only; no submit/validation/fetch yet)
+// DEV-only toggle to force submit error (no UI)
+const FORCE_SUBMIT_ERROR = false;
+
 const modal = document.getElementById('signup-modal');
 const appRoot = document.querySelector('.app');
 const modalOverlay = modal?.querySelector('.toda-modal__overlay');
 const modalDialog = modal?.querySelector('.toda-modal__dialog');
 const modalCloseButton = modal?.querySelector('.toda-modal__close');
 const modalNameInput = document.getElementById('lead-name');
+const modalEmailInput = document.getElementById('lead-email');
+const modalConsentInput = document.getElementById('lead-consent');
 const modalForm = document.getElementById('signup-modal-form');
+const modalSubmitButton = modalForm?.querySelector('button[type="submit"]');
+const modalGeneralError = document.getElementById('signup-modal-error');
+const nameFieldError = document.getElementById('lead-name-error');
+const emailFieldError = document.getElementById('lead-email-error');
+const consentFieldError = document.getElementById('lead-consent-error');
+
+const successToast = document.getElementById('signup-success-toast');
+const successToastOverlay = successToast?.querySelector('.toda-toast__overlay');
+const successToastCloseButton = successToast?.querySelector('.toda-toast__close');
 
 let lastFocusedElement = null;
 let lastBodyOverflow = '';
+let lastBodyOverflowForToast = '';
+let isSubmitting = false;
+const submitButtonDefaultLabel = modalSubmitButton?.textContent || 'Absenden';
+
+const setModalGeneralError = (message) => {
+    if (!modalGeneralError) return;
+    if (!message) {
+        modalGeneralError.hidden = true;
+        return;
+    }
+    modalGeneralError.innerHTML = `<strong>Oops.</strong> ${message}`;
+    modalGeneralError.hidden = false;
+};
+
+const setFieldError = (el, show) => {
+    if (!el) return;
+    el.hidden = !show;
+};
+
+const clearModalUiState = () => {
+    setModalGeneralError('');
+    setFieldError(nameFieldError, false);
+    setFieldError(emailFieldError, false);
+    setFieldError(consentFieldError, false);
+
+    isSubmitting = false;
+    if (modalSubmitButton) {
+        modalSubmitButton.disabled = false;
+        modalSubmitButton.textContent = submitButtonDefaultLabel;
+    }
+};
+
+const resetModalFormValues = () => {
+    if (!modalForm) return;
+    modalForm.reset();
+
+    // Reset hidden chip inputs explicitly (and clear chip UI)
+    const hiddenInputs = modalForm.querySelectorAll('input[type="hidden"][data-resettable], input[type="hidden"][name="segment"], input[type="hidden"][name="appointments_per_week"]');
+    hiddenInputs.forEach((i) => {
+        i.value = '';
+    });
+
+    const chips = modalForm.querySelectorAll('.toda-modal__chip');
+    chips.forEach((chip) => {
+        chip.classList.remove('is-active');
+        chip.setAttribute('aria-pressed', 'false');
+    });
+};
+
+const mockSubmitRequest = () => {
+    const delay = 800 + Math.floor(Math.random() * 401); // 800–1200ms
+    return new Promise((resolve, reject) => {
+        window.setTimeout(() => {
+            if (FORCE_SUBMIT_ERROR) {
+                reject(new Error('Mock submit failed'));
+                return;
+            }
+            resolve({ ok: true });
+        }, delay);
+    });
+};
+
+const showSuccessToast = () => {
+    if (!successToast) return;
+    successToast.hidden = false;
+
+    lastBodyOverflowForToast = document.body.style.overflow || '';
+    document.body.style.overflow = 'hidden';
+
+    if (successToastCloseButton && typeof successToastCloseButton.focus === 'function') {
+        successToastCloseButton.focus({ preventScroll: true });
+    }
+};
+
+const hideSuccessToast = () => {
+    if (!successToast) return;
+    successToast.hidden = true;
+    document.body.style.overflow = lastBodyOverflowForToast;
+};
 
 const initChipGroups = () => {
     if (!modalForm) return;
@@ -16,6 +109,9 @@ const initChipGroups = () => {
     const groups = modalForm.querySelectorAll('[data-chip-group]');
     groups.forEach((groupEl) => {
         const group = /** @type {HTMLElement} */ (groupEl);
+        if (group.dataset.chipsInitialized === 'true') {
+            return;
+        }
         const fieldName = group.getAttribute('data-chip-group');
         if (!fieldName) return;
 
@@ -43,6 +139,8 @@ const initChipGroups = () => {
                 setActive(isAlreadyActive ? '' : value);
             });
         });
+
+        group.dataset.chipsInitialized = 'true';
     });
 };
 
@@ -70,6 +168,7 @@ const openModal = (openerEl) => {
     document.body.style.overflow = 'hidden';
 
     initChipGroups();
+    clearModalUiState();
 
     // Autofocus name field for mobile keyboard
     if (modalNameInput && typeof modalNameInput.focus === 'function') {
@@ -79,6 +178,9 @@ const openModal = (openerEl) => {
 
 const closeModal = () => {
     if (!modal) return;
+
+    // Important: only clear error/loading state, keep user inputs unless success reset happened elsewhere
+    clearModalUiState();
 
     modal.hidden = true;
     appRoot?.removeAttribute('aria-hidden');
@@ -142,6 +244,67 @@ document.getElementById('signup-form-bottom')?.addEventListener('submit', openFr
 modalCloseButton?.addEventListener('click', closeModal);
 modalOverlay?.addEventListener('click', closeModal);
 document.addEventListener('keydown', handleGlobalKeydown);
+
+// Submit handling (Iteration C: validation + mock request + UX states)
+modalForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    clearModalUiState();
+
+    const name = (modalNameInput?.value || '').trim();
+    const email = (modalEmailInput?.value || '').trim();
+    const consentChecked = !!modalConsentInput?.checked;
+
+    const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    let hasError = false;
+    if (!name) {
+        setFieldError(nameFieldError, true);
+        hasError = true;
+    }
+    if (!email || !emailLooksValid) {
+        setFieldError(emailFieldError, true);
+        hasError = true;
+    }
+    if (!consentChecked) {
+        setFieldError(consentFieldError, true);
+        hasError = true;
+    }
+
+    if (hasError) {
+        setModalGeneralError('Bitte fülle die Pflichtfelder aus.');
+        return;
+    }
+
+    // Submit UX state
+    isSubmitting = true;
+    if (modalSubmitButton) {
+        modalSubmitButton.disabled = true;
+        modalSubmitButton.textContent = 'Sende…';
+    }
+
+    try {
+        await mockSubmitRequest();
+
+        // Success flow: reset form, close modal, show toast
+        resetModalFormValues();
+        clearModalUiState();
+        closeModal();
+        showSuccessToast();
+    } catch (err) {
+        // Error flow: keep modal open, keep user values, reset loading state and show general error
+        isSubmitting = false;
+        if (modalSubmitButton) {
+            modalSubmitButton.disabled = false;
+            modalSubmitButton.textContent = submitButtonDefaultLabel;
+        }
+        setModalGeneralError('Das hat leider nicht geklappt. Bitte versuche es nochmal.');
+    }
+});
+
+successToastCloseButton?.addEventListener('click', hideSuccessToast);
+successToastOverlay?.addEventListener('click', hideSuccessToast);
 
 // Simple scroll reveal for features
 const observerOptions = {
