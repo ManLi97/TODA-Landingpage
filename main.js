@@ -1,6 +1,6 @@
 // Modal wiring (Iteration B: behavior + accessibility only; no submit/validation/fetch yet)
-// DEV-only toggle to force submit error (no UI)
-const FORCE_SUBMIT_ERROR = false;
+// DEV-only toggle to force a server error (no UI)
+const FORCE_SERVER_ERROR = false;
 
 const modal = document.getElementById('signup-modal');
 const appRoot = document.querySelector('.app');
@@ -72,17 +72,31 @@ const resetModalFormValues = () => {
     });
 };
 
-const mockSubmitRequest = () => {
-    const delay = 800 + Math.floor(Math.random() * 401); // 800–1200ms
-    return new Promise((resolve, reject) => {
-        window.setTimeout(() => {
-            if (FORCE_SUBMIT_ERROR) {
-                reject(new Error('Mock submit failed'));
-                return;
-            }
-            resolve({ ok: true });
-        }, delay);
+const postLead = async (payload) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (FORCE_SERVER_ERROR) headers['x-force-error'] = '1';
+
+    const res = await fetch('/.netlify/functions/lead', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(payload)
     });
+
+    let data;
+    try {
+        data = await res.json();
+    } catch {
+        data = null;
+    }
+
+    if (!res.ok) {
+        const err = new Error((data && data.message) ? data.message : 'Request failed');
+        err.data = data;
+        err.status = res.status;
+        throw err;
+    }
+
+    return data;
 };
 
 const showSuccessToast = () => {
@@ -255,6 +269,8 @@ modalForm?.addEventListener('submit', async (e) => {
     const name = (modalNameInput?.value || '').trim();
     const email = (modalEmailInput?.value || '').trim();
     const consentChecked = !!modalConsentInput?.checked;
+    const segment = (modalForm?.querySelector('input[name="segment"]')?.value || '').trim();
+    const appointmentsPerWeek = (modalForm?.querySelector('input[name="appointments_per_week"]')?.value || '').trim();
 
     const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -285,7 +301,13 @@ modalForm?.addEventListener('submit', async (e) => {
     }
 
     try {
-        await mockSubmitRequest();
+        await postLead({
+            name,
+            email,
+            segment: segment || undefined,
+            appointments_per_week: appointmentsPerWeek || undefined,
+            marketing_consent: consentChecked
+        });
 
         // Success flow: reset form, close modal, show toast
         resetModalFormValues();
@@ -299,7 +321,13 @@ modalForm?.addEventListener('submit', async (e) => {
             modalSubmitButton.disabled = false;
             modalSubmitButton.textContent = submitButtonDefaultLabel;
         }
-        setModalGeneralError('Das hat leider nicht geklappt. Bitte versuche es nochmal.');
+        const serverData = err?.data;
+        if (serverData?.fieldErrors) {
+            setFieldError(nameFieldError, !!serverData.fieldErrors.name);
+            setFieldError(emailFieldError, !!serverData.fieldErrors.email);
+            setFieldError(consentFieldError, !!serverData.fieldErrors.marketing_consent);
+        }
+        setModalGeneralError(serverData?.message || 'Das hat leider nicht geklappt. Bitte versuche es nochmal.');
     }
 });
 
