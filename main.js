@@ -60,7 +60,7 @@ const resetModalFormValues = () => {
     modalForm.reset();
 
     // Reset hidden chip inputs explicitly (and clear chip UI)
-    const hiddenInputs = modalForm.querySelectorAll('input[type="hidden"][data-resettable], input[type="hidden"][name="segment"], input[type="hidden"][name="appointments_per_week"]');
+    const hiddenInputs = modalForm.querySelectorAll('input[type="hidden"][data-resettable], input[type="hidden"][name="segment"], input[type="hidden"][name="revenue_range"]');
     hiddenInputs.forEach((i) => {
         i.value = '';
     });
@@ -270,7 +270,7 @@ modalForm?.addEventListener('submit', async (e) => {
     const email = (modalEmailInput?.value || '').trim();
     const consentChecked = !!modalConsentInput?.checked;
     const segment = (modalForm?.querySelector('input[name="segment"]')?.value || '').trim();
-    const appointmentsPerWeek = (modalForm?.querySelector('input[name="appointments_per_week"]')?.value || '').trim();
+    const revenueRange = (modalForm?.querySelector('input[name="revenue_range"]')?.value || '').trim();
 
     const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -305,7 +305,7 @@ modalForm?.addEventListener('submit', async (e) => {
             name,
             email,
             segment: segment || undefined,
-            appointments_per_week: appointmentsPerWeek || undefined,
+            revenue_range: revenueRange || undefined,
             marketing_consent: consentChecked
         });
 

@@ -2,7 +2,7 @@
  * Netlify Function: lead (Phase 1 stub - no Airtable yet)
  *
  * POST JSON:
- * { name, email, segment?, appointments_per_week?, marketing_consent }
+ * { name, email, segment?, revenue_range?, marketing_consent }
  *
  * Responses:
  * - 200: { ok: true }
@@ -10,6 +10,7 @@
  */
 
 const emailLooksValid = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+const allowedRevenueRanges = new Set(["< 1.500", "1.500 - 5.000", "5.000 +"]);
 
 export async function handler(event) {
   // DEV-only: force server error for UX testing (not shown in UI)
@@ -47,12 +48,17 @@ export async function handler(event) {
   const name = typeof payload.name === "string" ? payload.name.trim() : "";
   const email = typeof payload.email === "string" ? payload.email.trim() : "";
   const marketingConsent = payload.marketing_consent === true;
+  const revenueRange =
+    typeof payload.revenue_range === "string" ? payload.revenue_range.trim() : "";
 
   const fieldErrors = {};
   if (!name) fieldErrors.name = "Bitte gib deinen Namen an.";
   if (!email || !emailLooksValid(email)) fieldErrors.email = "Bitte gib eine gültige Email an.";
   if (!marketingConsent)
     fieldErrors.marketing_consent = "Bitte bestätige dein Einverständnis.";
+  if (revenueRange && !allowedRevenueRanges.has(revenueRange)) {
+    fieldErrors.revenue_range = "Bitte wähle eine gültige Option.";
+  }
 
   if (Object.keys(fieldErrors).length > 0) {
     return {
