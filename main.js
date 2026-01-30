@@ -335,6 +335,8 @@ successToastCloseButton?.addEventListener('click', hideSuccessToast);
 successToastOverlay?.addEventListener('click', hideSuccessToast);
 
 // Simple scroll reveal for features
+document.documentElement.classList.add('js');
+
 const observerOptions = {
     threshold: 0.1
 };
@@ -342,15 +344,12 @@ const observerOptions = {
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target); // animate only once
         }
     });
 }, observerOptions);
 
 document.querySelectorAll('.feature-card').forEach(card => {
-    card.style.opacity = '0';
-    card.style.transform = 'translateY(20px)';
-    card.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
     observer.observe(card);
 });

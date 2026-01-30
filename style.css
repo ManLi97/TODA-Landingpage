@@ -134,6 +134,58 @@ body {
     transition: border-color 0.3s ease;
 }
 
+.js .feature-card {
+    opacity: 0;
+    transform: translateX(-18px);
+}
+
+.js .feature-card:nth-child(even) {
+    transform: translateX(18px);
+}
+
+.js .feature-card.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.js .feature-card.is-visible:nth-child(odd) {
+    animation: toda-slide-in-left 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.js .feature-card.is-visible:nth-child(even) {
+    animation: toda-slide-in-right 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes toda-slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toda-slide-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .js .feature-card {
+        opacity: 1;
+        transform: none;
+        animation: none !important;
+    }
+}
+
 .feature-card::before {
     content: '';
     position: absolute;
