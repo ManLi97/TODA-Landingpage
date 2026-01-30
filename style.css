@@ -324,9 +324,12 @@ body {
 
 .legal-page h1 {
     font-family: var(--font-serif);
-    font-size: 3rem;
+    font-size: clamp(2rem, 7vw, 3rem);
     color: var(--color-text);
     margin-bottom: var(--spacing-md);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .legal-page h2 {
@@ -348,6 +351,22 @@ body {
 .legal-page p {
     color: var(--color-text-muted);
     margin-bottom: 1rem;
+}
+
+.legal-page ul {
+    color: var(--color-text-muted);
+    margin: 0 0 1rem 1.1rem;
+    padding: 0;
+}
+
+.legal-page li {
+    margin-bottom: 0.4rem;
+}
+
+.legal-page hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    margin: var(--spacing-md) 0;
 }
 
 /* Signup Modal (Iteration A: CSS only, strictly scoped) */
