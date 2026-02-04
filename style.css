@@ -289,7 +289,9 @@ body {
 /* Mobile-only spacing refinement between hero CTA and pre-features */
 @media (max-width: 767px) {
     .hero {
-        height: 65vh;
+        height: auto;
+        min-height: 100vh;
+        min-height: 100svh;
     }
 
     .pre-features {
